@@ -4,21 +4,34 @@ import 'isomorphic-fetch';
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import SearchIcon from '@material-ui/icons/Search';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { PlanetsTable } from './PlanetsTable';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
+import { MainModel } from './MainModel';
 import { BaseSortingPaging } from '../../base/BaseSortingPaging';
-import { PlanetsModel } from './PlanetsModel';
-import { PlanetsController } from './PlanetsController';
 import { PlanetsTableState } from './PlanetsTableState';
 
-export class PlanetsView extends React.Component<RouteComponentProps<{}>, {}> {
-	model: PlanetsModel = new PlanetsModel();
-	controller: PlanetsController;
-    planetsTable:any;
-	
+const loading_container = {
+	textAlign: "center"
+} as React.CSSProperties;
+
+export class PlanetsView extends React.Component<RouteComponentProps<{}>, MainModel> {
+
 	constructor(props: any) {
         super(props);
-        //this.state = { records: [], loading: true };
+        this.state = { 
+			searchText: '', 
+			isLoading: false, 
+			records: []
+		};
 
 		/*
         fetch('api/SampleData/Weatherrecords')
@@ -27,40 +40,70 @@ export class PlanetsView extends React.Component<RouteComponentProps<{}>, {}> {
                 this.setState({ records: data, loading: false });
             });
 		*/
-		this.planetsTable = React.createRef();
-		this.model.addListener((e:any) => { this.onModelChange(e) });
-		this.controller = new PlanetsController(this.model);
-
-		//this.planetsTable.setState({});
     }
-	
-	private onModelChange(newState: PlanetsTableState) {
-		this.planetsTable.current.setState(newState);
-	}
-	
-	private onTableStateChange(newState: BaseSortingPaging) {
-		this.controller.setNewPage(newState);
-	} 
-	
+
     public render() {
-		//large
-        return <div>
-			<h1>Planet repository</h1> 
-			<p>
-				<Button variant="extendedFab" href="#/planetitem/0">
-					<AddCircleOutlineIcon/> Add
-				</Button>
-			</p>
-            <PlanetsTable ref={this.planetsTable} onChange={(e) => this.onTableStateChange(e)}></PlanetsTable>
-        </div>;
+		let tableBody = (this.state == null || this.state.records.length ==0 || this.state.isLoading == true) ? 
+			<TableBody>
+				<TableRow>
+					<TableCell colSpan={4}>
+						<div style={loading_container}>
+							<CircularProgress />
+						</div>
+					</TableCell>
+				</TableRow>
+			</TableBody>:
+			<TableBody>
+				  {this.state.records.map(row => {
+					//var lastVisitDate = row.lastVisitDate?row.lastVisitDate.toISOString().slice(0,10):"";
+					var lastVisitDate = "";
+					
+					return (
+					  <TableRow key={row.Title}>
+						<TableCell component="th" scope="row">
+						  {row.QuestionDate}
+						</TableCell>
+						<TableCell>{row.Title}</TableCell>
+						<TableCell>{row.Author}</TableCell>
+						<TableCell>
+							<a href="#">Go to</a>
+						</TableCell>
+					  </TableRow>
+					);
+				  })}
+				</TableBody>;
+
+        return <div style={{ textAlign: 'center' }}>
+					<TextField
+					  id="fd-SearchText"
+					  label="Search text"
+					  value={this.state.searchText}
+					  margin="normal"
+					/>
+					<Button variant="fab">
+						<SearchIcon />
+					</Button>
+					<br/>
+					<Table>
+						<TableHead>
+						  <TableRow>
+							<TableCell>
+								Question date
+							</TableCell>
+							<TableCell>
+								Title
+							</TableCell>
+							<TableCell numeric>
+								Author
+							</TableCell>
+							<TableCell></TableCell>
+						  </TableRow>
+						</TableHead>
+						{ tableBody }
+					</Table>
+				</div>;
     }
 	
 	public componentDidMount() {
-		this.controller.setNewPage({
-			orderBy: "name",
-			order: "desc",
-			page: 0,
-			rowsPerPage: 5
-		});
 	}
 }
