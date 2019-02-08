@@ -1,4 +1,3 @@
-import { PlanetsTableState } from './PlanetsTableState';
 import {EventEmitter} from 'fbemitter';
 
 export class Article {

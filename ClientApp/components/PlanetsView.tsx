@@ -16,8 +16,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import { MainModel } from './MainModel';
-import { BaseSortingPaging } from '../../base/BaseSortingPaging';
-import { PlanetsTableState } from './PlanetsTableState';
 
 const loading_container = {
 	textAlign: "center"
