@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import { PlanetsView } from './components/PlanetsView';
+import { ArticlesView } from './components/ArticlesView';
 
 export const routes = <Layout>
-	<Route path='/' component={ PlanetsView } />
+	<Route path='/' component={ ArticlesView } />
 </Layout>;
