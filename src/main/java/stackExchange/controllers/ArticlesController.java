@@ -1,5 +1,7 @@
 package stackExchange.controllers;
 
+import java.net.URISyntaxException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,13 @@ public class ArticlesController {
 	@ResponseBody()
 	public Article[] Get(Integer page, String searchText)
 	{
-		return articleService.Get(page, searchText);
+		try {
+			return articleService.Get(page, searchText);
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new Article[0];
 	}
 }
