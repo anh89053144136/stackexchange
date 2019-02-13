@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import stackExchange.controllers.ArticlesController;
 import stackExchange.entities.Article;
+import stackExchange.entities.Root;
 import stackExchange.services.FakeArticleService;
 import stackExchange.services.HttpArticleService;
 
@@ -16,8 +17,8 @@ public class ArticlesControllerTests {
 		//articlesController.articleService = new FakeArticleService();
 		articlesController.articleService = new HttpArticleService();
 		
-		Article[] articles = articlesController.Get(1, "spome text");
+		Root result = articlesController.Get(1, "spome text");
 		
-		Assert.assertTrue(articles.length == 1);
+		Assert.assertTrue(result != null);
 	}
 }

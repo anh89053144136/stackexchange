@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import stackExchange.entities.Article;
+import stackExchange.entities.Root;
 import stackExchange.services.IArticleService;
 
 @Controller
@@ -18,7 +19,7 @@ public class ArticlesController {
 	
 	@RequestMapping(value = "articles", method = RequestMethod.GET)
 	@ResponseBody()
-	public Article[] Get(Integer page, String searchText)
+	public Root Get(Integer page, String searchText)
 	{
 		try {
 			return articleService.Get(page, searchText);
@@ -27,6 +28,6 @@ public class ArticlesController {
 			e.printStackTrace();
 		}
 		
-		return new Article[0];
+		return null;
 	}
 }
