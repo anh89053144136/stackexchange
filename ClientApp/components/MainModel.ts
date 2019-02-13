@@ -7,6 +7,7 @@ export class MainModel {
 	page: number;
 	records:Array<Article>;
 	hasMore: boolean;
+	errorMessageOpen: boolean;
 	
 	constructor() {
 		this.searchText = '';
@@ -14,6 +15,7 @@ export class MainModel {
 		this.records = [];
 		this.page = 1;
 		this.hasMore = false;
+		this.errorMessageOpen = false;
 	};
 	
 }

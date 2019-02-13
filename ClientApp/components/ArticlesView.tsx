@@ -9,6 +9,9 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import SearchIcon from '@material-ui/icons/Search';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -32,7 +35,8 @@ export class ArticlesView extends React.Component<RouteComponentProps<{}>, MainM
 			isLoading: false, 
 			page: 1,
 			records: [],
-			hasMore: false
+			hasMore: false,
+			errorMessageOpen: false
 		};
     }
 
@@ -120,8 +124,34 @@ export class ArticlesView extends React.Component<RouteComponentProps<{}>, MainM
 							</TableRow>
 						</TableFooter>
 					</Table>
+					<Snackbar
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'left',
+						}}
+						open={this.state.errorMessageOpen}
+						autoHideDuration={6000}
+						onClose={(event, reason) => this.handleClose(event, reason)}
+						ContentProps={{
+							'aria-describedby': 'message-id',
+						}}
+						message={<span id="message-id">There is sothing wrang!</span>}
+						action={[
+							<IconButton key="close" aria-label="Close" color="inherit" onClick={(event) => this.handleClose(event, null)}>
+								<CloseIcon />
+							</IconButton>,
+						]}
+					/>
 				</div>;
     }
+	
+	public handleClose = (event: any, reason: any) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ errorMessageOpen: false });
+    };
 	
 	public handleSearchText(event: any) {
 		this.setState({
@@ -147,14 +177,18 @@ export class ArticlesView extends React.Component<RouteComponentProps<{}>, MainM
 		
 		let newPage = this.state.page + 1;
 		
-        let url = "http://api.stackexchange.com/2.2/search?order=desc&sort=activity&site=stackoverflow&pagesize=5" +
-				  "&page=" + encodeURIComponent(newPage.toString()) +
+        let url = "articles?" +
+				  "page=" + encodeURIComponent(newPage.toString()) +
 				  "&intitle=" + encodeURIComponent(this.state.searchText);
 
         fetch(url).then(response => response.json())
             .then(data => {
+				if(data.StatusCode != 1) {
+					this.setState({ errorMessageOpen: true });
+					return;
+				}
 				
-				let records = data.items.map((article: any) => {
+				let records = data.Content.items.map((article: any) => {
 					return {
 						QuestionDate: new Date(article.creation_date),
 						Title: article.title,

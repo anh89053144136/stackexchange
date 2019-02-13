@@ -5,21 +5,17 @@ import org.springframework.stereotype.Repository;
 import stackExchange.entities.Article;
 import stackExchange.entities.Root;
 
-@Repository
+//@Repository
 public class FakeArticleService implements IArticleService {
 	
 	@Override
 	public Root Get(Integer page, String searchText) {
-		Article[] result = new Article[1];
-		Article newArticle = new Article();
-		/*
-		newArticle.Author = "Ivan Stepanov";
-		newArticle.Link = "www.google.com";
-		newArticle.Title = "myTitle";
-		newArticle.QuestionDate = "123456";
-		*/
-		result[0] = newArticle;
-		
-		return new Root();
+		Root result = new Root();
+		result.items = new Article[1];
+		result.has_more = false;
+		result.quota_max = 1;
+		result.quota_remaining = 2;
+	
+		return result;
 	}
 }
