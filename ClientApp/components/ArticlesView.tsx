@@ -112,7 +112,6 @@ export class ArticlesView extends React.Component<RouteComponentProps<{}>, MainM
 							<TableCell numeric>
 								Author
 							</TableCell>
-							<TableCell></TableCell>
 						  </TableRow>
 						</TableHead>
 						{ tableBody }
@@ -175,15 +174,15 @@ export class ArticlesView extends React.Component<RouteComponentProps<{}>, MainM
 			isLoading: true
 		});
 		
-		let newPage = this.state.page + 1;
+		let newPage = append == true ? this.state.page + 1 : 1;
 		
         let url = "articles?" +
 				  "page=" + encodeURIComponent(newPage.toString()) +
-				  "&intitle=" + encodeURIComponent(this.state.searchText);
+				  "&searchText=" + encodeURIComponent(this.state.searchText);
 
         fetch(url).then(response => response.json())
             .then(data => {
-				if(data.StatusCode != 1) {
+				if(data.StatusCode != 1 || data.Content.items == null) {
 					this.setState({ errorMessageOpen: true });
 					return;
 				}
@@ -202,14 +201,14 @@ export class ArticlesView extends React.Component<RouteComponentProps<{}>, MainM
 						page: newPage,
 						records: this.state.records.concat(records),
 						isLoading: false,
-						hasMore: data.has_more
+						hasMore: data.Content.has_more
 					});
 				} else {
 					this.setState({
 						page: newPage,
 						records: records,
 						isLoading: false,
-						hasMore: data.has_more
+						hasMore: data.Content.has_more
 					});
 				}
             });
